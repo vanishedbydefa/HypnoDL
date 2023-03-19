@@ -15,6 +15,7 @@ options:
  * -p PATH, --path PATH  path to the download folder
  * -q {High,Low}, --quality {High,Low} Choose quality (default: High)
  * -a AMOUNT, --amount AMOUNT Amount of recent videos to download (default: 1)
+ * -f FORCE, --force FORCE Download, even when already downloaded (default: False)
  * -s SPECIFIC, --specific SPECIFIC Download a specific Video from URL of the Site
  * -t TUBE, --tube TUBE  Use HypnoDL for another Website that's using TUBE SCRIPT. Enter Domain e.x: hypnotube.com
   
