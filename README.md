@@ -1,6 +1,11 @@
 # HypnoDL
 A simple downloader for video platforms that use Tube Script
 
+## Feature
+* Download up to 250 of the latest videos
+* Download a specific video
+* All features also work for other websites that use Tube Script
+
 ## Usage
 usage: downloader.py [-h] [-p PATH] [-q {High,Low}] [-a AMOUNT] [-s SPECIFIC] [-t TUBE]
 
