@@ -1,39 +1,43 @@
 import requests as req
 import re
 
-def get_video_id(website_content, amount):
-    video_id = website_content.split('"id":"', amount+1)
-    video_id.pop(0)
-    for i in range(len(video_id)):
-        video_id[i] = re.sub(r'title.*', "", video_id[i])[:-3]
+def get_video_id(website_content):
+    video_id = []
+    for tags in website_content:
+        for key, value in tags.items():
+            if key == "id":
+                video_id.append(value)
     return video_id
 
-def get_video_title(website_content, amount):
-    video_title = website_content.split('"title":"', amount+1)
-    video_title.pop(0)
-    for i in range(len(video_title)):
-        video_title[i] = re.sub(r'length.*', "", video_title[i])[:-3]
+def get_video_title(website_content):
+    video_title = []
+    for tags in website_content:
+        for key, value in tags.items():
+            if key == "title":
+                video_title.append(value)
     return video_title
 
-def get_video_website_urls(website_content, amount):
-    video_website_urls = website_content.split('"url":"', amount+1)
-    video_website_urls.pop(0)
-    for i in range(len(video_website_urls)):
-        video_website_urls[i] = re.sub(r'\.html.*',"",video_website_urls[i]).replace("\\", "") + ".html"
-    return video_website_urls
+def get_video_website_urls(website_content):
+    video_urls= []
+    for tags in website_content:
+        for key, value in tags.items():
+            if key == "url":
+                video_urls.append(value)
+    return video_urls
 
-def get_video_thumbnail_urls(website_content, amount):
-    video_thumbnail_urls = website_content.split('"main_thumb":"', amount+1)
-    video_thumbnail_urls.pop(0)
-    for i in range(len(video_thumbnail_urls)):
-        video_thumbnail_urls[i] = re.sub(r'\.jpg.*',"",video_thumbnail_urls[i]).replace("\\","") + ".jpg"
+def get_video_thumbnail_urls(website_content):
+    video_thumbnail_urls = []
+    for tags in website_content:
+        for key, value in tags.items():
+            if key == "main_thumb":
+                video_thumbnail_urls.append(value)
     return video_thumbnail_urls
 
 def get_video_urls(video_website_urls):
     video_urls = [ [] for i in range(len(video_website_urls))]
     for i in range(len(video_website_urls)):
 
-        url = req.get(video_website_urls[i]).text.split("source", 3)
+        url = req.get(video_website_urls[i]).text.split("<source", 3)
         url.pop(0)
         for j in range(len(url)):
             url[j] = url[j][:130]
@@ -49,24 +53,26 @@ def get_video_urls(video_website_urls):
                 url[j] = re.sub(r'\.mov.*',"",url[j])[6:] + ".mov"
             elif ".MOV" in url[j]:
                 url[j] = re.sub(r'\.MOV.*',"",url[j])[6:] + ".MOV"
+            elif ".mpg" in url[j]:
+                url[j] = re.sub(r'\.mpg.*',"",url[j])[6:] + ".mpg"
             elif ".mp4" in url[j]:
                 url[j] = re.sub(r'\.mp4.*',"",url[j])[6:] + ".mp4"
             else:
                 print(url[j])
-                raise SystemExit("Error: video format is not avi, m4v, webm, mkv, mov, MOV, mp4. Couldn't generate correct url")
+                raise SystemExit("Error: video format is not avi, m4v, webm, mkv, mov, MOV, mpg, mp4. Couldn't generate correct url")
             video_urls[i].append(url[j])
     return video_urls
 
-def get_all_informations(website_content, amount):
+def get_all_informations(website_content):
 
-    information = [ [] for i in range(amount)]
+    information = [ [] for i in range(len(website_content))]
 
-    video_id = get_video_id(website_content, amount)
-    video_title = get_video_title(website_content, amount)
-    video_website_urls = get_video_website_urls(website_content, amount)
-    video_thumbnail_urls = get_video_thumbnail_urls(website_content, amount)
+    video_id = get_video_id(website_content)
+    video_title = get_video_title(website_content)
+    video_website_urls = get_video_website_urls(website_content)
+    video_thumbnail_urls = get_video_thumbnail_urls(website_content)
     video_urls = get_video_urls(video_website_urls)
-    for i in range(amount):
+    for i in range(len(website_content)):
         information[i].append(video_id[i])
         information[i].append(video_title[i])
         information[i].append(video_website_urls[i])
