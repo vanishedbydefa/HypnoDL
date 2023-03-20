@@ -24,6 +24,8 @@ def run_specific(specific, path, quality, force):
         tmp_path = str(path) + "\\" + str(to_download[0]) + ".mov"
     elif "MOV" in to_download[1][quality]:
         tmp_path = str(path) + "\\" + str(to_download[0]) + ".MOV"   
+    elif "mpg" in to_download[1][quality]:
+        tmp_path = str(path) + "\\" + str(to_download[0]) + ".mpg"   
     
     if force == False:
         if os.path.isfile(tmp_path):
