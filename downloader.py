@@ -130,7 +130,7 @@ for i in range(len(to_download)-1,-1,-1):
         f.close()
         insert_db(con, str(to_download[i][0]), to_download[i][2], str(path), str(datetime.datetime.now()), update_db)
         set_last_id(to_download[i][0])
-        print("Done [" + str(len(to_download)-1-i) + "/" + str(len(to_download)-1) + "]")
+        print("Done [" + str(len(to_download)-i) + "/" + str(len(to_download)) + "]")
     else:
         print("    Info: Video < " + to_download[i][1] + " > cloudn't be downloaded!")
         print("       -> If you want to check access manually: " + to_download[i][2])
