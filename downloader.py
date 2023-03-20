@@ -135,5 +135,3 @@ for i in range(len(to_download)-1,-1,-1):
         print("    Info: Video < " + to_download[i][1] + " > cloudn't be downloaded!")
         print("       -> If you want to check access manually: " + to_download[i][2])
     not_downloadable = False
-#print("[*] ")
-#print("[*] Last Video downloaded")
