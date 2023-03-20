@@ -43,7 +43,6 @@ if tube != "":
 api_resp = req.get("https://" + api_domain + "/api/?output=json&command=media.newest&type=videos&offset=0&amount=" + str(amount)).json()["data"]
 print("Welcome to HypnoDL")
 print("[*] Configuring")
-set_date(str(datetime.datetime.now()))
 set_path(str(path))
 set_quality(quality)
 
@@ -52,6 +51,7 @@ if get_used() == "True":
 else:
     print("    -> HypnoDL was never used until now")
     set_used("True")
+set_date(str(datetime.datetime.now()))
 con = connect_db()
 
 if specific != "":
