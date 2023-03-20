@@ -1,5 +1,5 @@
 # HypnoDL
-A simple downloader for Hypnotube and video platforms that use Tube Script
+A simple downloader for Hypnotube.com and video platforms that use Tube Script
 
 ## Feature
 * Download up to 250 of the latest videos
