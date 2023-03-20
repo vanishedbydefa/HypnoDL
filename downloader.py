@@ -1,10 +1,10 @@
+import re
 from status import *
 from video import *
 from database import *
 from flags import run_specific
 import argparse
 import pathlib
-import requests
 import time
 import datetime
 
@@ -40,9 +40,7 @@ tube = args.tube
 if tube != "":
     api_domain = str(tube)
 
-resp = req.get("https://" + api_domain + "/api/?output=json&command=media.newest&type=videos&offset=0&amount=" + str(amount))
-website_content = resp.text
-
+api_resp = req.get("https://" + api_domain + "/api/?output=json&command=media.newest&type=videos&offset=0&amount=" + str(amount)).json()["data"]
 print("Welcome to HypnoDL")
 print("[*] Configuring")
 set_date(str(datetime.datetime.now()))
@@ -61,7 +59,7 @@ if specific != "":
     exit(1)
 
 print("    Info: Will download <= " + str(amount) + " videos")
-to_download = get_all_informations(website_content, amount)
+to_download = get_all_informations(api_resp)
 print("[*] Downloading the following titles: ")
 for i in range(amount):
     print("    -> " + to_download[i][1])
@@ -87,6 +85,7 @@ for i in range(len(to_download)-1,-1,-1):
         not_downloadable = True
 
     if not_downloadable == False:
+        to_download[i][1] = re.sub('[/<>:?|"*]', "", to_download[i][1]).replace("\\", "")
         if "avi" in to_download[i][4][quality]:
             tmp_path = str(path) + "\\" + str(to_download[i][1]) + ".avi"
         elif "mp4" in to_download[i][4][quality]:
@@ -101,7 +100,8 @@ for i in range(len(to_download)-1,-1,-1):
             tmp_path = str(path) + "\\" + str(to_download[i][1]) + ".mov"
         elif "MOV" in to_download[i][4][quality]:
             tmp_path = str(path) + "\\" + str(to_download[i][1]) + ".MOV"
-        
+        elif "mpg" in to_download[i][4][quality]:
+            tmp_path = str(path) + "\\" + str(to_download[i][1]) + ".mpg"        
         entrys = request_db(con, str(to_download[i][0]))
         update_db = False
         if len(entrys) == 4:
@@ -122,7 +122,7 @@ for i in range(len(to_download)-1,-1,-1):
                 update_db = True
         
         print("Donloading: " + to_download[i][1])
-        r = requests.get(to_download[i][4][quality], stream = True)
+        r = req.get(to_download[i][4][quality], stream = True)
         with open(tmp_path, 'wb') as f:
             for chunk in r.iter_content(chunk_size = 1024*1024):
                 if chunk:
@@ -130,7 +130,7 @@ for i in range(len(to_download)-1,-1,-1):
         f.close()
         insert_db(con, str(to_download[i][0]), to_download[i][2], str(path), str(datetime.datetime.now()), update_db)
         set_last_id(to_download[i][0])
-        print("Done")
+        print("Done [" + str(len(to_download)-1-i) + "/" + str(len(to_download)-1) + "]")
     else:
         print("    Info: Video < " + to_download[i][1] + " > cloudn't be downloaded!")
         print("       -> If you want to check access manually: " + to_download[i][2])
