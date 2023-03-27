@@ -33,6 +33,14 @@ def get_video_thumbnail_urls(website_content):
                 video_thumbnail_urls.append(value)
     return video_thumbnail_urls
 
+def get_video_category(website_content):
+    video_categorys = []
+    for tags in website_content:
+        for key, value in tags.items():
+            if key == "channels":
+                video_categorys.append(value)
+    return video_categorys
+
 def get_video_urls(video_website_urls):
     video_urls = [ [] for i in range(len(video_website_urls))]
     for i in range(len(video_website_urls)):
@@ -71,12 +79,14 @@ def get_all_informations(website_content):
     video_title = get_video_title(website_content)
     video_website_urls = get_video_website_urls(website_content)
     video_thumbnail_urls = get_video_thumbnail_urls(website_content)
+    video_categorys = get_video_category(website_content)
     video_urls = get_video_urls(video_website_urls)
     for i in range(len(website_content)):
         information[i].append(video_id[i])
         information[i].append(video_title[i])
         information[i].append(video_website_urls[i])
         information[i].append(video_thumbnail_urls[i])
+        information[i].append(video_categorys[i])
         information[i].append(video_urls[i])
     return information
 
