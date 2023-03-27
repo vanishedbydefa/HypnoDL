@@ -9,7 +9,8 @@ def connect_db():
                     id TEXT,
                     url TEXT,
                     location TEXT,
-                    date TEXT
+                    date TEXT,
+                    category TEXT
                 );
             """)
     except sl.OperationalError:
@@ -18,14 +19,14 @@ def connect_db():
         print("    -> Database created")
     return con
 
-def insert_db(con, _id, _url, _location, _date, update_db):
+def insert_db(con, _id, _url, _location, _date, _category, update_db):
     cursor = con.cursor()
     if update_db:
         sql = 'UPDATE IDS SET location = ?, date = ? WHERE id = ?'
         data = (_location, _date, _id)
     else:
-        sql = 'INSERT INTO IDS (id, url, location, date) values(?, ?, ?, ?);'
-        data = (_id, _url, _location, _date)
+        sql = 'INSERT INTO IDS (id, url, location, date, category) values(?, ?, ?, ?, ?);'
+        data = (_id, _url, _location, _date, _category)
     cursor.execute(sql, data)
     con.commit()
     cursor.close()
