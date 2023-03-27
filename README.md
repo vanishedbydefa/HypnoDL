@@ -7,17 +7,19 @@ A simple downloader for Hypnotube.com and video platforms that use Tube Script
 * All features also work for other websites that use Tube Script
 
 ## Usage
-usage: downloader.py [-h] [-p PATH] [-q {High,Low}] [-a AMOUNT] [-s SPECIFIC] [-t TUBE]
+```
+usage: downloader.py [-h] [-p PATH] [-q {High,Low}] [-a AMOUNT] [-c  CATEGORY] [-o  {True,False}] [-f {True,False}] [-s SPECIFIC] [-t TUBE]
 
 options:
- -h, --help            show this help message and exit
- 
- * -p PATH, --path PATH  path to the download folder
- * -q {High,Low}, --quality {High,Low} Choose quality (default: High)
- * -a AMOUNT, --amount AMOUNT Amount of recent videos to download (default: 1)
- * -f FORCE, --force FORCE Download, even when already downloaded (default: False)
- * -s SPECIFIC, --specific SPECIFIC Download a specific Video from URL of the Site
- * -t TUBE, --tube TUBE  Use HypnoDL for another Website that's using TUBE SCRIPT. Enter Domain e.x: hypnotube.com
+  -h, --help            show this help message and exit
+  -p PATH, --path PATH  path to the download folder
+  -q {High,Low}, --quality {High,Low} Choose quality (default: High)
+  -a AMOUNT, --amount AMOUNT Amount of recent videos to download (default: 1)
+  -o {True,False}, --organize {True,False} Organize downloaded videos to folder named like the category of the video
+  -f {True,False}, --force {True,False} Download, even when already downloaded (default: False)
+  -s SPECIFIC, --specific SPECIFIC Download a specific Video from URL of the Site
+  -t TUBE, --tube TUBE  Use HypnoDL for another Website that's using TUBE SCRIPT. Enter Domain e.x: hypnotube.com
+  ```
   
   ### Example
   * Download last 10 videos `downloader.py -p S:/HypnoTube Downloader/downloads -a 10`
