@@ -77,7 +77,7 @@ for i in range(len(to_download)-1,-1,-1):
         if quality == "High":
             quality = 0
         else:
-            quality = len(to_download[i][4])-1
+            quality = len(to_download[i][5])-1
     elif len(to_download[i][5]) == 1:
         quality = 0
     else:
@@ -85,7 +85,7 @@ for i in range(len(to_download)-1,-1,-1):
 
     if not_downloadable == False:
 
-        folder = to_download[i][4]
+        folder = str(to_download[i][4]).split(",",1)[0]
         if organize:
             if os.path.isdir(str(path) + "\\" + str(folder)) == False:
                 os.mkdir(str(path) + "\\" + str(folder))
@@ -111,7 +111,6 @@ for i in range(len(to_download)-1,-1,-1):
         elif "mpg" in to_download[i][5][quality]:
             tmp_path += str(to_download[i][1]) + ".mpg"        
         entrys = request_db(con, str(to_download[i][0]))
-        print(tmp_path)
         update_db = False
         if len(entrys) == 4:
             if force == False:
