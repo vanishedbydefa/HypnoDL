@@ -14,7 +14,9 @@ argParser = argparse.ArgumentParser()
 argParser.add_argument("-p", "--path", type=pathlib.Path, help="path to the download folder")
 argParser.add_argument("-q", "--quality", default="High", choices=["High","Low"], help="Choose quality (default: High)")
 argParser.add_argument("-a", "--amount", type=int, default=1, help="Amount of recent videos to download (default: 1)")
-argParser.add_argument("-f", "--force", type=bool, default=False, help="Download, even when already downloaded (default: False)")
+argParser.add_argument("-c ", "--category", type=str, default="", help="Specify category to download Videos from")
+argParser.add_argument("-o ", "--organize", type=bool, default=True, choices=[True, False], help="Organize downloaded videos to folder named like the category of the video")
+argParser.add_argument("-f", "--force", type=bool, default=False, choices=[True, False], help="Download, even when already downloaded (default: False)")
 argParser.add_argument("-s", "--specific", type=str, default="", help="Download a specific Video from URL of the Site")
 argParser.add_argument("-t", "--tube", type=str, default="", help="Use HypnoDL for another Website that's using TUBE SCRIPT. Enter Domain e.x: hypnotube.com")
 args = argParser.parse_args()
@@ -34,6 +36,8 @@ if amount > 250:
 if amount > 30:
     print(str(amount) +  " Videos will take a very long time to download\n")
     time.sleep(3)
+category = args.category
+organize = args.organize
 force = args.force
 specific = args.specific
 tube = args.tube
@@ -67,42 +71,47 @@ for i in range(amount):
         print("       ...")
         break
 
-if quality == "High":
-    quality = 1
-else:
-    quality = 2
-
 not_downloadable = False
 for i in range(len(to_download)-1,-1,-1):
-    if len(to_download[i][4]) >= 2:
+    if len(to_download[i][5]) >= 2:
         if quality == "High":
             quality = 0
         else:
             quality = len(to_download[i][4])-1
-    elif len(to_download[i][4]) == 1:
+    elif len(to_download[i][5]) == 1:
         quality = 0
     else:
         not_downloadable = True
 
     if not_downloadable == False:
+
+        folder = to_download[i][4]
+        if organize:
+            if os.path.isdir(str(path) + "\\" + str(folder)) == False:
+                os.mkdir(str(path) + "\\" + str(folder))
+            tmp_path = str(path) + "\\" + str(folder) + "\\"
+        else:
+            tmp_path = str(path) + "\\"
+        
         to_download[i][1] = re.sub('[/<>:?|"*]', "", to_download[i][1]).replace("\\", "")
-        if "avi" in to_download[i][4][quality]:
-            tmp_path = str(path) + "\\" + str(to_download[i][1]) + ".avi"
-        elif "mp4" in to_download[i][4][quality]:
-            tmp_path = str(path) + "\\" + str(to_download[i][1]) + ".mp4"
-        elif "webm" in to_download[i][4][quality]:
-            tmp_path = str(path) + "\\" + str(to_download[i][1]) + ".webm"
-        elif "m4v" in to_download[i][4][quality]:
-            tmp_path = str(path) + "\\" + str(to_download[i][1]) + ".m4v"
-        elif "mkv" in to_download[i][4][quality]:
-            tmp_path = str(path) + "\\" + str(to_download[i][1]) + ".mkv"
-        elif "mov" in to_download[i][4][quality]:
-            tmp_path = str(path) + "\\" + str(to_download[i][1]) + ".mov"
-        elif "MOV" in to_download[i][4][quality]:
-            tmp_path = str(path) + "\\" + str(to_download[i][1]) + ".MOV"
-        elif "mpg" in to_download[i][4][quality]:
-            tmp_path = str(path) + "\\" + str(to_download[i][1]) + ".mpg"        
+        if "avi" in to_download[i][5][quality]:
+            tmp_path += str(to_download[i][1]) + ".avi"
+        elif "mp4" in to_download[i][5][quality]:
+            tmp_path += str(to_download[i][1]) + ".mp4"
+        elif "webm" in to_download[i][5][quality]:
+            tmp_path += str(to_download[i][1]) + ".webm"
+        elif "m4v" in to_download[i][5][quality]:
+            tmp_path += str(to_download[i][1]) + ".m4v"
+        elif "mkv" in to_download[i][5][quality]:
+            tmp_path += str(to_download[i][1]) + ".mkv"
+        elif "mov" in to_download[i][5][quality]:
+            tmp_path += str(to_download[i][1]) + ".mov"
+        elif "MOV" in to_download[i][5][quality]:
+            tmp_path += str(to_download[i][1]) + ".MOV"
+        elif "mpg" in to_download[i][5][quality]:
+            tmp_path += str(to_download[i][1]) + ".mpg"        
         entrys = request_db(con, str(to_download[i][0]))
+        print(tmp_path)
         update_db = False
         if len(entrys) == 4:
             if force == False:
@@ -122,13 +131,13 @@ for i in range(len(to_download)-1,-1,-1):
                 update_db = True
         
         print("Donloading: " + to_download[i][1])
-        r = req.get(to_download[i][4][quality], stream = True)
+        r = req.get(to_download[i][5][quality], stream = True)
         with open(tmp_path, 'wb') as f:
             for chunk in r.iter_content(chunk_size = 1024*1024):
                 if chunk:
                     f.write(chunk)
         f.close()
-        insert_db(con, str(to_download[i][0]), to_download[i][2], str(path), str(datetime.datetime.now()), update_db)
+        insert_db(con, str(to_download[i][0]), to_download[i][2], str(path), str(datetime.datetime.now()), str(folder), update_db)
         set_last_id(to_download[i][0])
         print("Done [" + str(len(to_download)-i) + "/" + str(len(to_download)) + "]")
     else:
