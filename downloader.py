@@ -63,7 +63,7 @@ if specific != "":
     exit(1)
 
 print("    Info: Will download <= " + str(amount) + " videos")
-print("[*] Fetching necessary Information (this can take some time)")
+print("[*] Fetching necessary information (this can take some time)")
 to_download = get_all_informations(api_resp)
 print("[*] Downloading the following titles: ")
 for i in range(amount):
