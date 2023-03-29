@@ -22,8 +22,8 @@ def connect_db():
 def insert_db(con, _id, _url, _location, _date, _category, update_db):
     cursor = con.cursor()
     if update_db:
-        sql = 'UPDATE IDS SET location = ?, date = ? WHERE id = ?'
-        data = (_location, _date, _id)
+        sql = 'UPDATE IDS SET location = ?, date = ?, category = ? WHERE id = ?'
+        data = (_location, _date, _category, _id)
     else:
         sql = 'INSERT INTO IDS (id, url, location, date, category) values(?, ?, ?, ?, ?);'
         data = (_id, _url, _location, _date, _category)
