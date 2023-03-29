@@ -63,6 +63,7 @@ if specific != "":
     exit(1)
 
 print("    Info: Will download <= " + str(amount) + " videos")
+print("[*] Fetching necessary Information (this can take some time)")
 to_download = get_all_informations(api_resp)
 print("[*] Downloading the following titles: ")
 for i in range(amount):
@@ -112,7 +113,7 @@ for i in range(len(to_download)-1,-1,-1):
             tmp_path += str(to_download[i][1]) + ".mpg"        
         entrys = request_db(con, str(to_download[i][0]))
         update_db = False
-        if len(entrys) == 4:
+        if len(entrys) == 5:
             if force == False:
                 print("\n")
                 print("WARNING: ")
@@ -126,10 +127,10 @@ for i in range(len(to_download)-1,-1,-1):
                     continue
             else:
                 if force == False:
-                    print("File seems to not exist anymore: " + entrys[2])
+                    print("File seems to not exist anymore")
                 update_db = True
         
-        print("Donloading: " + to_download[i][1])
+        print("Donloading: " + to_download[i][1] + " [" + str(folder) + "]")
         r = req.get(to_download[i][5][quality], stream = True)
         with open(tmp_path, 'wb') as f:
             for chunk in r.iter_content(chunk_size = 1024*1024):
