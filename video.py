@@ -1,5 +1,9 @@
 import requests as req
 import re
+import os
+from status import *
+from database import *
+import datetime
 
 def get_video_id(website_content):
     video_id = []
@@ -93,3 +97,77 @@ def get_all_informations(website_content):
 def get_specific_title(video_website_url):
     title = req.get(video_website_url).text.split("title", 3)
     return title[1][1:-23]
+
+
+def downloader(to_download, organize, path, con, force, quality):
+    not_downloadable = False
+    for i in range(len(to_download)-1,-1,-1):
+        if len(to_download[i][5]) >= 2:
+            if quality == "High":
+                quality = 0
+            else:
+                quality = len(to_download[i][5])-1
+        elif len(to_download[i][5]) == 1:
+            quality = 0
+        else:
+            not_downloadable = True
+
+        if not_downloadable == False:
+            folder = str(to_download[i][4]).split(",",1)[0]
+            if organize:
+                if os.path.isdir(str(path) + "\\" + str(folder)) == False:
+                    os.mkdir(str(path) + "\\" + str(folder))
+                tmp_path = str(path) + "\\" + str(folder) + "\\"
+            else:
+                tmp_path = str(path) + "\\"
+            
+            to_download[i][1] = re.sub('[/<>:?|"*]', "", to_download[i][1]).replace("\\", "")
+            if "avi" in to_download[i][5][quality]:
+                tmp_path += str(to_download[i][1]) + ".avi"
+            elif "mp4" in to_download[i][5][quality]:
+                tmp_path += str(to_download[i][1]) + ".mp4"
+            elif "webm" in to_download[i][5][quality]:
+                tmp_path += str(to_download[i][1]) + ".webm"
+            elif "m4v" in to_download[i][5][quality]:
+                tmp_path += str(to_download[i][1]) + ".m4v"
+            elif "mkv" in to_download[i][5][quality]:
+                tmp_path += str(to_download[i][1]) + ".mkv"
+            elif "mov" in to_download[i][5][quality]:
+                tmp_path += str(to_download[i][1]) + ".mov"
+            elif "MOV" in to_download[i][5][quality]:
+                tmp_path += str(to_download[i][1]) + ".MOV"
+            elif "mpg" in to_download[i][5][quality]:
+                tmp_path += str(to_download[i][1]) + ".mpg"        
+            entrys = request_db(con, str(to_download[i][0]))
+            update_db = False
+            if len(entrys) == 5:
+                if force == False:
+                    print("\n")
+                    print("WARNING: ")
+                    print("There already is an entry for this ID in the database [" + str(entrys[0]) + "]")
+                    print("Last time you downloaded this video to: " + entrys[2] + " on " + entrys[3])
+                    print("HypnoDL will try to check if the Video still exist in the old location")
+                if os.path.isfile(tmp_path):
+                    if force == False:
+                        print("File seems to still exist here: " + entrys[2] + "\\" + to_download[i][1])
+                        print("HypnoDL will NOT download this video again.")
+                        continue
+                else:
+                    if force == False:
+                        print("File seems to not exist anymore")
+                    update_db = True
+            
+            print("Donloading: " + to_download[i][1] + " [" + str(folder) + "]")
+            r = req.get(to_download[i][5][quality], stream = True)
+            with open(tmp_path, 'wb') as f:
+                for chunk in r.iter_content(chunk_size = 1024*1024):
+                    if chunk:
+                        f.write(chunk)
+            f.close()
+            insert_db(con, str(to_download[i][0]), to_download[i][2], str(path), str(datetime.datetime.now()), str(folder), update_db)
+            set_last_id(to_download[i][0])
+            print("Done [" + str(len(to_download)-i) + "/" + str(len(to_download)) + "]")
+        else:
+            print("    Info: Video < " + to_download[i][1] + " > cloudn't be downloaded!")
+            print("       -> If you want to check access manually: " + to_download[i][2])
+        not_downloadable = False
