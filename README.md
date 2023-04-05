@@ -15,6 +15,7 @@ options:
   -p PATH, --path PATH  path to the download folder
   -q {High,Low}, --quality {High,Low} Choose quality (default: High)
   -a AMOUNT, --amount AMOUNT Amount of recent videos to download (default: 1)
+  -c  CATEGORY, --category CATEGORY Specify category to download Videos from
   -o {True,False}, --organize {True,False} Organize downloaded videos to folder named like the category of the video
   -f {True,False}, --force {True,False} Download, even when already downloaded (default: False)
   -s SPECIFIC, --specific SPECIFIC Download a specific Video from URL of the Site
