@@ -4,6 +4,7 @@ A simple downloader for Hypnotube.com and video platforms that use Tube Script
 ## Feature
 * Download up to 250 of the latest videos
 * Download a specific video
+* Download all videos of a specified category
 * All features also work for other websites that use Tube Script
 
 ## Usage
