@@ -67,11 +67,13 @@ def get_video_urls(video_website_urls):
                 url[j] = re.sub(r'\.MOV.*',"",url[j])[6:] + ".MOV"
             elif ".mpg" in url[j]:
                 url[j] = re.sub(r'\.mpg.*',"",url[j])[6:] + ".mpg"
+            elif ".mpeg" in url[j]:
+                url[j] = re.sub(r'\.mpeg.*',"",url[j])[6:] + ".mpeg"
             elif ".mp4" in url[j]:
                 url[j] = re.sub(r'\.mp4.*',"",url[j])[6:] + ".mp4"
             else:
                 print(url[j])
-                raise SystemExit("Error: video format is not avi, m4v, webm, mkv, mov, MOV, mpg, mp4. Couldn't generate correct url")
+                raise SystemExit("Error: video format is not avi, m4v, webm, mkv, mov, MOV, mpg, mpeg, mp4. Couldn't generate correct url")
             video_urls[i].append(url[j])
     return video_urls
 
@@ -137,7 +139,9 @@ def downloader(to_download, organize, path, con, force, quality):
             elif "MOV" in to_download[i][5][quality]:
                 tmp_path += str(to_download[i][1]) + ".MOV"
             elif "mpg" in to_download[i][5][quality]:
-                tmp_path += str(to_download[i][1]) + ".mpg"        
+                tmp_path += str(to_download[i][1]) + ".mpg"
+            elif "mpeg" in to_download[i][5][quality]:
+                tmp_path += str(to_download[i][1]) + ".mpeg"            
             entrys = request_db(con, str(to_download[i][0]))
             update_db = False
             if len(entrys) == 5:
