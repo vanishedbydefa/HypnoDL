@@ -29,6 +29,8 @@ def run_specific(specific, path, quality, force):
         tmp_path = str(path) + "\\" + str(to_download[0]) + ".mpg"
     elif "mpeg" in to_download[1][quality]:
         tmp_path = str(path) + "\\" + str(to_download[0]) + ".mpeg"
+    elif "webm" in to_download[1][quality]:
+        tmp_path = str(path) + "\\" + str(to_download[0]) + ".webm"
        
     
     if force == False:
