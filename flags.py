@@ -68,7 +68,10 @@ def run_category(category, path, quality, force, domain, organize, con):
             print("\nYour entered category do not match any valid category")
             print("Enter a category like: " + categorys[0][0])
             exit(1)
-    for p in range(1,10000):
+
+    curr_page = get_category_page(category)
+
+    for p in range(curr_page,10000):
         print("[*] Fetching necessary information (this can take some time)")
         website_urls = []
         cat_home_stat = req.get(cat_url+ "/page" + str(p) + ".html")
@@ -98,3 +101,4 @@ def run_category(category, path, quality, force, domain, organize, con):
         downloader(to_download, organize, path, con, force, quality)
         if len(to_download) < 20:
             exit(1)
+        set_category_page(category, p)
