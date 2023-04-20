@@ -91,7 +91,6 @@ def set_category_page(category, page):
     if categories[i][0] == str(category):
       data = get_config()
       data["categories"][i][1] = page
-      print(data["categories"][i][1])
       with open('config.json', 'w') as config:
         json.dump(data, config)
         return
