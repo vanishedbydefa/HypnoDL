@@ -74,3 +74,25 @@ def get_amount_to_download(website_content,amount):
     else:
         amount_to_download = amount
     return amount_to_download 
+
+def get_category_page(category):
+  categories = get_config()["categories"]
+  for i in categories:
+    if i[0] == category:
+      if i[1] == "#":
+        return 1
+      else:
+        return int(i[1])
+  print("Category not found")
+
+def set_category_page(category, page):
+  categories = get_config()["categories"]
+  for i in range(len(categories)):
+    if categories[i][0] == str(category):
+      data = get_config()
+      data["categories"][i][1] = page
+      print(data["categories"][i][1])
+      with open('config.json', 'w') as config:
+        json.dump(data, config)
+        return
+  print("Category not found")
