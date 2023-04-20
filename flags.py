@@ -70,7 +70,8 @@ def run_category(category, path, quality, force, domain, organize, con):
             exit(1)
 
     curr_page = get_category_page(category)
-
+    if force:
+        curr_page = 1
     for p in range(curr_page,10000):
         print("[*] Fetching necessary information (this can take some time)")
         website_urls = []
