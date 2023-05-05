@@ -75,12 +75,22 @@ def get_amount_to_download(website_content,amount):
         amount_to_download = amount
     return amount_to_download 
 
+def get_lastpage(url, lpage):
+  page = req.get(url + "page" + str(lpage) + ".html").text
+  if not "Sorry, no results were found." in page:
+      soup = str(BeautifulSoup(page, 'html.parser').find_all(class_="pagination-inner-col inner-col")[0]).split('page')
+      last_page = soup[len(soup)-2].split(".html",1)[0]
+      if int(last_page) <= int(lpage):
+          return lpage
+      else:
+          return get_lastpage(url, last_page)
+
 def get_category_page(category):
   categories = get_config()["categories"]
   for i in categories:
     if i[0] == category:
       if i[1] == "#":
-        return 1
+        return False
       else:
         return int(i[1])
   print("Category not found")
