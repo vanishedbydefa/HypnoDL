@@ -59,6 +59,17 @@ def get_categorys(domain):
     return categorys
 
 def run_category(category, path, quality, force, domain, organize, con):
+    def get_lastpage(url, lpage):
+        page = req.get(url + "page" + str(lpage) + ".html").text
+        if not "Sorry, no results were found." in page:
+            soup = str(BeautifulSoup(page, 'html.parser').find_all(class_="pagination-inner-col inner-col")[0]).split('page')
+            last_page = soup[len(soup)-2].split(".html",1)[0]
+            if int(last_page) <= int(lpage):
+                return lpage
+            else:
+                return get_lastpage(url, last_page)
+
+
     categorys = get_categorys(domain)
     for i in categorys:
         if str(category) == str(i[0]):
@@ -69,10 +80,14 @@ def run_category(category, path, quality, force, domain, organize, con):
             print("Enter a category like: " + categorys[0][0])
             exit(1)
 
-    curr_page = get_category_page(category)
+    if get_category_page(category) == False:
+        curr_page = int(get_lastpage(cat_url,1))
+    else:
+        curr_page = get_category_page(category)
     if force:
-        curr_page = 1
-    for p in range(curr_page,10000):
+        curr_page = str(get_lastpage(cat_url,1))
+
+    for p in range(curr_page,1,-1):
         print("[*] Fetching necessary information (this can take some time)")
         website_urls = []
         cat_home_stat = req.get(cat_url+ "/page" + str(p) + ".html")
