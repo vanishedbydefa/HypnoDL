@@ -115,6 +115,4 @@ def run_category(category, path, quality, force, domain, organize, con):
             
         print("[*] Downloading videos")  
         downloader(to_download, organize, path, con, force, quality)
-        if len(to_download) < 20:
-            exit(1)
         set_category_page(category, p)
